@@ -15,7 +15,7 @@ import Nav from './navigation';
 
 import { getUser } from '../actions/user';
 
-import '../../../css/admin/admin.scss';
+import '../../../css/admin/admin.less';
 
 class App extends React.Component {
     constructor() {

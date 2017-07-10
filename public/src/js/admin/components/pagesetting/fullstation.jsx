@@ -4,8 +4,78 @@
  */
 import React, { Component } from 'react';
 
-import { Collapse, Table, Input, Button, Popconfirm } from 'antd/dist/antd';
+import { Collapse, Table, Input, Button, Popconfirm, Modal, message } from 'antd/dist/antd';
 const Panel = Collapse.Panel;
+
+class AddModal extends Component {
+    state = {
+        ModalText: 'Content of the modal',
+        visible: false,
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    handleOk = () => {
+        this.setState({
+            ModalText: 'The modal will be closed after two seconds',
+            confirmLoading: true,
+        });
+        setTimeout(() => {
+            this.setState({
+                visible: false,
+                confirmLoading: false,
+            });
+            this.props.onAdd();
+            message.success('添加成功！')
+        }, 2000);
+    }
+    handleCancel = () => {
+        if(this.state.confirmLoading === true) return;
+        console.log('Clicked cancel button');
+        this.setState({
+            visible: false,
+        });
+    }
+    handleChange = (e) => {
+        console.log(e.target.value)
+    }
+    render() {
+        const { visible, confirmLoading, ModalText } = this.state;
+        const { title } = this.props;
+        const titleStyle = {
+            padding: '5px'
+        }
+        return (
+            <div>
+            <div></div>
+                <div style={{padding: '10px'}}>
+                    <Button className="editable-add-btn" type="primary" onClick={this.showModal}>添加</Button>
+                </div>
+                <Modal title={title}
+                    visible={visible}
+                    onOk={this.handleOk}
+                    confirmLoading={confirmLoading}
+                    onCancel={this.handleCancel}
+                >
+                    <div>
+                        <div style={titleStyle}>网站名称：</div>
+                        <Input
+                            value={'1234567890'}
+                            onChange={e => this.handleChange(e)}
+                        />
+                        <div style={titleStyle}>网站地址：</div>
+                        <Input
+                            value={'http://www/bing.com'}
+                            onChange={e => this.handleChange(e)}
+                        />
+                    </div>
+                </Modal>
+            </div>
+        );
+    }
+}
 
 class FriendlyLinkTableCell extends Component {
   
@@ -68,6 +138,7 @@ class FriendlyLinkTableCell extends Component {
 class FriendlyLink extends React.Component {
     constructor(props) {
         super(props);
+
         this.columns = [{
             title: '网站名称',
             dataIndex: 'name',
@@ -157,8 +228,10 @@ class FriendlyLink extends React.Component {
     handleChange(key, index, value) {
         // 在这个位置将更改的数据保存到数据库中
         // fetch('/api/admin/addFriendlyLink');
-
-        console.log(key, index, value);
+        
+        if(!value) {
+            return this.onDelete(index);
+        }
 
         const { data } = this.state;
         data[index][key].value = value;
@@ -171,12 +244,12 @@ class FriendlyLink extends React.Component {
         const newItem = {
             key: data.length.toString(),
             name: {
-                editable: true,
-                value: '',
+                editable: false,
+                value: '123456',
             },
             address: {
-                editable: true,
-                value: '',
+                editable: false,
+                value: 'qwerty',
             },
         }
         var newData = [...data, newItem]
@@ -232,9 +305,10 @@ class FriendlyLink extends React.Component {
 
         return (
             <div>
-                <div style={{padding: '10px'}}>
-                    <Button className="editable-add-btn" onClick={() => this.onAdd()}>添加</Button>
-                </div>
+                <AddModal
+                    title='友情链接'
+                    onAdd={() => this.onAdd()}
+                />
                 <Table bordered dataSource={dataSource} columns={columns} pagination={false} />
             </div>
         )

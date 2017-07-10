@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 import { Layout, Menu, Breadcrumb, BackTop, Row, Col } from 'antd';
 const { Content } = Layout;
 
-import '../../css/style.scss';
+import '../../css/style.less';
 
 import Header from '../module/header';
 import Footer from '../module/footer';
