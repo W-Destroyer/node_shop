@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 const { Header } = Layout;
 
-import '../../css/header.scss';
+import '../../css/header.less';
 
 export default class extends Component {
     constructor() {

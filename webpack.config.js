@@ -109,9 +109,6 @@ var config = {
             test: /\.less$/,
             loader: "style-loader!css-loader!less-loader"
         }, {
-            test: /\.(scss|sass)$/,
-            loader: "style-loader!css-loader!sass-loader"
-        }, {
             test: /\.(jpg|png)$/,
             loader: "url-loader?limit=8192"
         }],
