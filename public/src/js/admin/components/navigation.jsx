@@ -131,9 +131,9 @@ export default class Nav extends React.Component {
     render() {
         var subMenuList = this.state.list.map((item, index, arr) => item.type == 'group' ? (
             <SubMenu key={"sub_" + index} title={<span><Icon type={item.icon} /><span>{item.name}</span></span>}>
-            {item.children.map((child, childIndex) => (<Menu.Item key={'item_' + index + '_' + childIndex}><Link to={'/admin' + child.link}>{child.name}</Link></Menu.Item>))}
+            {item.children.map((child, childIndex) => (<Menu.Item key={'item_' + index + '_' + childIndex}><Link to={'/admin' + (child.link ? child.link : '')}>{child.name}</Link></Menu.Item>))}
             </SubMenu> ) : (
-                <Menu.Item key={'item_' + index}><Link to={'/admin' + item.link}><Icon type={item.icon} />{item.name}</Link></Menu.Item>
+                <Menu.Item key={'item_' + index}><Link to={'/admin' + (item.link ? item.link : '')}><Icon type={item.icon} />{item.name}</Link></Menu.Item>
             )
         )
         return (

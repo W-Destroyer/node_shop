@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link, browserHistory } from 'react-router';
+import { bindActionCreators } from 'redux';
+import { push } from 'react-router-redux';
 
 // import Header from './header';
 // import Nav from "./nav";
 // import Body from './body';
 // import Notify from 'module/notify/index';
 
-import { Layout } from 'antd/dist/antd';
+import { Layout, Breadcrumb, Icon} from 'antd/dist/antd';
 const { Footer, Sider, Content } = Layout;
 
 import { connect } from 'react-redux';
@@ -13,31 +16,84 @@ import { connect } from 'react-redux';
 import Header from './header';
 import Nav from './navigation';
 
-import { getUser } from '../actions/user';
-
 import '../../../css/admin/admin.less';
 
-class App extends React.Component {
+
+class HeaderBreadcrumb extends Component {
+    constructor() {
+        super();
+    }
+    render() {
+        const { pathname } = this.props;
+        var routes = pathname.split('/').slice(2);
+        var href = '/admin'
+        const breadcrumbItem = routes.map((item, index) => {
+            href += '/' + item;
+            return (
+                <Breadcrumb.Item key={index}>
+                    <Link to={href}><Icon type="user" /><span>{item}</span></Link>
+                </Breadcrumb.Item>
+            )
+        });
+        return (
+            <header className='container-header'>
+                <Breadcrumb separator=">">
+                    <Breadcrumb.Item>
+                        当前位置： 
+                        <Link to="/admin"><Icon type="home" /> 主页</Link>
+                    </Breadcrumb.Item>
+                    { breadcrumbItem }
+                </Breadcrumb>
+            </header>
+        )
+    }
+}
+
+function setContent(params, children) {
+
+    return (
+        <PageFullStation params={params}>
+            {children}
+        </PageFullStation>
+    )
+}
+
+
+class App extends Component {
     constructor() {
         super();
         this.name = 'Piny';
         this.company = '江西艾麦达科技有限公司';
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        // return nextProps.location.path === '/admin'
+        return true;
+    }
+
+    onClick = e => {
+        const { dispatch } = this.props;
+        dispatch(push('/admin/pagesetting/' + Math.random()))
+    }
+
     render() {
-        var { dispatch } = this.props;
-        // console.log(dispatch(getUser('hahaha')));
+        
+        const { dispatch, location } = this.props;
+        const { pathname } = location;
         return (
             <div>
                 <Layout style={{overflow: 'hidden'}}>
                     <Header />
                     <Layout className='layout'>
                         <Sider className='sider' width='auto'>
-                            <Nav />
+                            <Nav params={pathname}/>
                         </Sider>
                         <Layout className='content'>
                             <Content className='container'>
-                                { this.props.children }
+                                <HeaderBreadcrumb pathname={pathname} />
+                                <section className="container-body" style={{background: '#fff'}}>
+                                    { this.props.children }
+                                </section>
                                 <Footer className='footer' > &copy; {this.company}  <div style={{float: 'right'}}>Power By Piny</div></Footer>
                             </Content>
                         </Layout>
@@ -48,8 +104,10 @@ class App extends React.Component {
     }
 }
 
-function select(state) {
+const mapStateToProps = (state, ownProps) => {
     console.log(state);
+    console.log(ownProps);
+
     return {
         nav: state.nav,
         user: state.user,
@@ -57,9 +115,11 @@ function select(state) {
     }
 }
 
-export default connect(select)(App);
+const mapDispatchToProps = dispatch => {
+    console.log(dispatch)
+    return {
+        dispatch
+    }
+}
 
-// <div style={{height: '800px'}}>
-//                                     { this.props.user.data || 'undefined'}
-//                                     <div style={{cursor: 'pointer'}} onClick={e => dispatch(getUser(Math.random()))}>修改</div>
-//                                 </div>
+export default connect(mapStateToProps)(App);
