@@ -3,23 +3,31 @@
  * 2017.07.04
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import { Collapse, Table, Input, Button, Popconfirm, Modal, message } from 'antd/dist/antd';
+import { Collapse, Table, Input, Button, Popconfirm, Modal, message, Icon } from 'antd/dist/antd';
 const Panel = Collapse.Panel;
 
 class AddModal extends Component {
+    
     state = {
-        ModalText: 'Content of the modal',
-        visible: false,
+        data: this.props.data,
+        visible: !!this.props.data.visible,
     }
+    
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.data.visible !== this.state.data.visible ||
+            nextState.data.key !== this.state.data.key;
+    }
+
     showModal = () => {
         this.setState({
             visible: true,
         });
     }
+
     handleOk = () => {
         this.setState({
-            ModalText: 'The modal will be closed after two seconds',
             confirmLoading: true,
         });
         setTimeout(() => {
@@ -33,7 +41,6 @@ class AddModal extends Component {
     }
     handleCancel = () => {
         if(this.state.confirmLoading === true) return;
-        console.log('Clicked cancel button');
         this.setState({
             visible: false,
         });
@@ -42,36 +49,17 @@ class AddModal extends Component {
         console.log(e.target.value)
     }
     render() {
-        const { visible, confirmLoading, ModalText } = this.state;
-        const { title } = this.props;
+        const { visible, confirmLoading } = this.state;
+        const { title, data } = this.props;
         const titleStyle = {
             padding: '5px'
         }
         return (
             <div>
-            <div></div>
                 <div style={{padding: '10px'}}>
                     <Button className="editable-add-btn" type="primary" onClick={this.showModal}>添加</Button>
                 </div>
-                <Modal title={title}
-                    visible={visible}
-                    onOk={this.handleOk}
-                    confirmLoading={confirmLoading}
-                    onCancel={this.handleCancel}
-                >
-                    <div>
-                        <div style={titleStyle}>网站名称：</div>
-                        <Input
-                            value={'1234567890'}
-                            onChange={e => this.handleChange(e)}
-                        />
-                        <div style={titleStyle}>网站地址：</div>
-                        <Input
-                            value={'http://www/bing.com'}
-                            onChange={e => this.handleChange(e)}
-                        />
-                    </div>
-                </Modal>
+                
             </div>
         );
     }
@@ -116,22 +104,7 @@ class FriendlyLinkTableCell extends Component {
     render() {
         const { value, valueDOM, editable } = this.state;
 
-        return (
-            <div>
-                {
-                    editable ?
-                    <div>
-                        <Input
-                            value={value}
-                            onChange={e => this.handleChange(e)}
-                        />
-                    </div> :
-                    <div className="editable-row-text">
-                        { valueDOM || value }
-                    </div>
-                }
-            </div>
-        );
+        return <div className="editable-row-text">{ valueDOM || value }</div>
     }
 }
 
@@ -147,7 +120,7 @@ class FriendlyLink extends React.Component {
         }, {
             title: '网站地址',
             dataIndex: 'address',
-            width: '40%',
+            width: '65%',
             render: (text, record, index) => {
                 var textDOM = <a href={text} target='_black'>{text}</a>;
                 return this.renderColumns(this.state.data, index, 'address', text, textDOM)
@@ -159,25 +132,15 @@ class FriendlyLink extends React.Component {
                 const { editable } = this.state.data[index].name;
                 return (
                     <div className="editable-row-operations">
-                        {
-                            editable ?
-                            <div>
-                                <Popconfirm title="确定保存？" onConfirm={() => this.editDone(index, 'save')}>
-                                    <a>保存</a>
-                                </Popconfirm>
-                                <span>&nbsp;&nbsp;</span>
-                                <Popconfirm title="确定关闭？" onConfirm={() => this.editDone(index, 'cancel')}>
-                                    <a>关闭</a>
-                                </Popconfirm>
-                            </div> :
-                            <div>
-                                <a onClick={() => this.onEdit(index)}>编辑</a>
-                                <span>&nbsp;&nbsp;</span>
-                                <Popconfirm title="确定删除？" onConfirm={() => this.onDelete(index)}>
-                                    <a>删除</a>
-                                </Popconfirm>
-                            </div>
-                        }
+                        <div>
+                            <a onClick={() => this.onEdit(index)}>
+                                <Icon type="edit" />
+                            </a>
+                            <span>&nbsp;&nbsp;</span>
+                            <Popconfirm title="确定删除？" onConfirm={() => this.onDelete(index)}>
+                                <a><Icon type="delete" /></a>
+                            </Popconfirm>
+                        </div>
                     </div>
                 );
             },
@@ -187,42 +150,43 @@ class FriendlyLink extends React.Component {
             data: [{
                 key: '0',
                 name: {
-                    editable: false,
                     value: '淘宝',
                 },
                 address: {
-                    editable: false,
                     value: 'https://www.taobao.com',
                 },
+                visible: false,
+
             }, {
                 key: '1',
                 name: {
-                    editable: false,
                     value: '天猫',
                 },
                 address: {
-                    editable: false,
                     value: 'https://www.tmall.com',
                 },
+                visible: false,
             }],
         };
     }
+    
     renderColumns(data, index, key, text, textDOM) {
-        const { editable, status } = data[index][key];
-        const itemKey = data[index].key;
-        if (typeof editable === 'undefined') {
-          return text;
-        }
-        return (
-            <FriendlyLinkTableCell
-                itemKey={itemKey}
-                editable={editable}
-                value={text}
-                valueDOM={textDOM}
-                onChange={value => this.handleChange(key, index, value)}
-                status={status}
-            />
-        );
+        // const { editable, status } = data[index][key];
+        // const itemKey = data[index].key;
+        // if (typeof editable === 'undefined') {
+        //   return text;
+        // }
+        // return (
+        //     <FriendlyLinkTableCell
+        //         itemKey={itemKey}
+        //         editable={editable}
+        //         value={text}
+        //         valueDOM={textDOM}
+        //         onChange={value => this.handleChange(key, index, value)}
+        //         status={status}
+        //     />
+        // );
+        return (<div className="editable-row-text">{ textDOM || text }</div>);
     }
 
     handleChange(key, index, value) {
@@ -243,6 +207,7 @@ class FriendlyLink extends React.Component {
         const { data } = this.state;
         const newItem = {
             key: data.length.toString(),
+            editable: false,
             name: {
                 editable: false,
                 value: '123456',
@@ -258,11 +223,12 @@ class FriendlyLink extends React.Component {
 
     onEdit(index) {
         const { data } = this.state;
-        Object.keys(data[index]).forEach((item) => {
-          if (data[index][item] && typeof data[index][item].editable !== 'undefined') {
-            data[index][item].editable = true;
-          }
-        });
+        data[index].visible = true;
+        // Object.keys(data[index]).forEach((item) => {
+        //   if (data[index][item] && typeof data[index][item].editable !== 'undefined') {
+        //     data[index][item].editable = true;
+        //   }
+        // });
         this.setState({ data });
     }
 
@@ -291,6 +257,7 @@ class FriendlyLink extends React.Component {
             });
         });
     }
+    
     render() {
         const { data } = this.state;
         const dataSource = data.map((item) => {
@@ -301,11 +268,14 @@ class FriendlyLink extends React.Component {
             return obj;
         });
 
+        const editItem = data.find(item => item.visible === true) || {};
+
         const columns = this.columns;
 
         return (
             <div>
                 <AddModal
+                    data={editItem}
                     title='友情链接'
                     onAdd={() => this.onAdd()}
                 />
@@ -317,16 +287,16 @@ class FriendlyLink extends React.Component {
 
 
 
-
 const customPanelStyle = {
-  // background: '#f7f7f7',
-  borderRadius: 4,
-  marginBottom: 24,
-  border: 0,
+    // background: '#f7f7f7',
+    borderRadius: 4,
+    marginBottom: 24,
+    border: 0,
 };
 
-export default class extends Component {
+class FullStation extends Component {
     render() {
+        console.log(this.props)
         return (
             <Collapse bordered={false} defaultActiveKey={[]}>
                 <Panel header={<div style={{fontWeight: 600}}>公司名称设置</div>} key="1" style={customPanelStyle}>
@@ -351,3 +321,15 @@ export default class extends Component {
         )
     }
 }
+
+const mapStateToProps = (state, ownProps) => {
+    console.log(state);
+    console.log(ownProps);
+
+    return {
+        nav: state.nav,
+        user: state.user,
+        product: state.product
+    }
+}
+export default connect(mapStateToProps)(FullStation);

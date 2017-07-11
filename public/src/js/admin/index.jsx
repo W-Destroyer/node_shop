@@ -20,7 +20,6 @@ import App from './components/app';
 import Dashboard from './components/dashboard';
 
 // Page Setting 页面设置
-import PageSetting from './components/pagesetting/index';
 import PageFullStation from './components/pagesetting/fullstation';
 import PageHome from './components/pagesetting/home';
 import PageCompany from './components/pagesetting/company';
@@ -51,7 +50,7 @@ ReactDOM.render((
             <Route path='/admin' component={ App } >
                 <IndexRoute component={ Dashboard } />
 
-                <Route path='pagesetting' component={ PageSetting } >
+                <Route path='pagesetting'>
                     <IndexRoute component={ PageFullStation } />
 
                     <Route path='fullstation' component={ PageFullStation } />
