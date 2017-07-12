@@ -49,22 +49,12 @@ class HeaderBreadcrumb extends Component {
     }
 }
 
-function setContent(params, children) {
-
-    return (
-        <PageFullStation params={params}>
-            {children}
-        </PageFullStation>
-    )
-}
-
-
 class App extends Component {
-    constructor() {
-        super();
-        this.name = 'Piny';
-        this.company = '江西艾麦达科技有限公司';
-    }
+    // constructor() {
+    //     super();
+    //     this.name = 'Piny';
+    //     this.company = '江西艾麦达科技有限公司';
+    // }
 
     shouldComponentUpdate(nextProps, nextState) {
         // return nextProps.location.path === '/admin'
@@ -78,7 +68,7 @@ class App extends Component {
 
     render() {
         
-        const { dispatch, location } = this.props;
+        const { dispatch, location, baseinfo } = this.props;
         const { pathname } = location;
         return (
             <div>
@@ -94,7 +84,7 @@ class App extends Component {
                                 <section className="container-body" style={{background: '#fff'}}>
                                     { this.props.children }
                                 </section>
-                                <Footer className='footer' > &copy; {this.company}  <div style={{float: 'right'}}>Power By Piny</div></Footer>
+                                <Footer className='footer' > &copy; {baseinfo.companyName}  <div style={{float: 'right'}}>Power By {baseinfo.authorName}</div></Footer>
                             </Content>
                         </Layout>
                     </Layout>
@@ -105,18 +95,15 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    console.log(state);
-    console.log(ownProps);
-
     return {
         nav: state.nav,
         user: state.user,
-        product: state.product
+        product: state.product,
+        baseinfo: state.baseinfo
     }
 }
 
 const mapDispatchToProps = dispatch => {
-    console.log(dispatch)
     return {
         dispatch
     }

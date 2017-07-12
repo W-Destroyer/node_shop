@@ -18,7 +18,7 @@ export default class Nav extends React.Component {
             children: []
         }, {
             name: '页面设置',
-            icon: 'mail',
+            icon: 'setting',
             type: 'group',
             link: '/admin/pagesetting',
             children: [{
@@ -45,7 +45,7 @@ export default class Nav extends React.Component {
             },]
         }, {
             name: '商品管理',
-            icon: 'mail',
+            icon: 'appstore',
             type: 'group',
             link: '/admin',
             children: [{
@@ -57,41 +57,45 @@ export default class Nav extends React.Component {
             }, {
                 name: '商品推荐',
                 link: '/production/recommend',
+            },]
+        }, {
+            name: '新闻管理',
+            icon: 'book',
+            type: 'group',
+            link: '/admin',
+            children: [{
+                name: '新闻列表',
+                link: '/news/list',
             }, {
-                name: '商品',
-                link: '/production',
+                name: '商品列表',
+                link: '/production/classify',
+            }, {
+                name: '商品推荐',
+                link: '/production/recommend',
             },]
         }, {
             name: '用户管理',
-            icon: 'appstore',
+            icon: 'user',
             type: 'group',
             children: [{
-                name: '用户管理'
+                name: '普通用户'
             }, {
-                name: '公司简介'
-            }, {
-                name: '产品展厅'
-            }, {
-                name: '新闻中心'
-            }, {
-                name: '售后服务'
-            }, {
-                name: '联系我们'
+                name: '管理员'
             },]
         }, {
-            name: '订单管理',
-            icon: 'setting',
-            type: 'group',
-            children: [{
-                name: '待支付订单'
-            }, {
-                name: '待发货订单'
-            }, {
-                name: '待收货订单'
-            }, {
-                name: '待评价订单'
-            },]
-        }, {
+        //     name: '订单管理',
+        //     icon: 'setting',
+        //     type: 'group',
+        //     children: [{
+        //         name: '待支付订单'
+        //     }, {
+        //         name: '待发货订单'
+        //     }, {
+        //         name: '待收货订单'
+        //     }, {
+        //         name: '待评价订单'
+        //     },]
+        // }, {
             name: '个人中心',
             icon: 'setting',
             type: 'group',
