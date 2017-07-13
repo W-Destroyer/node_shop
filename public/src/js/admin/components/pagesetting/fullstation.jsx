@@ -15,10 +15,6 @@ class FriendModal extends Component {
     
     constructor() {
         super();
-        this.data = {
-            name: {},
-            address: {}
-        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -34,11 +30,15 @@ class FriendModal extends Component {
 
     handleChange = (key, e) => {
         console.log(e.target.value)
-        this.data[key].value = e.target.value;
+        this.data[key] = e.target.value;
     }
 
     render() {
         const { title, data, visible } = this.props;
+        this.data = data ? Object.assign({}, data) : {
+            name: '',
+            address: ''
+        };
         console.log(data);
 
         return (
@@ -51,13 +51,13 @@ class FriendModal extends Component {
                     <div style={{ padding: '5px' }}>网站名称：</div>
                     <Input
                         type="text"
-                        defaultValue={data.name || ''}
+                        defaultValue={this.data.name}
                         onChange={e => this.handleChange('name', e)}
                     />
                     <div style={{ padding: '5px' }}>网站地址：</div>
                     <Input
                         type="text"
-                        defaultValue={data.address || ''}
+                        defaultValue={this.data.address}
                         onChange={e => this.handleChange('address', e)}
                     />
                 </div>
@@ -128,7 +128,7 @@ class FriendlyLink extends React.Component {
         if(changeId === -1) 
             dispatch(addFriendLink(changeData));
         else 
-            dispatch(editFriendLink(changeData));
+            dispatch(editFriendLink(changeId, changeData));
     }
 
     onHandleCancel = () => {
@@ -139,23 +139,24 @@ class FriendlyLink extends React.Component {
     render() {
 
         const { data } = this.props;
-        const dataSource = data.list.map((item) => {
-            const obj = {};
-            Object.keys(item).forEach((key) => {
-                obj[key] = key === 'key' ? item[key] : item[key].value;
-            });
-            return obj;
-        });
 
-        const { showModal } = data;
+        // const dataSource = data.list.map((item) => {
+        //     const obj = {};
+        //     Object.keys(item).forEach((key) => {
+        //         obj[key] = key === 'key' ? item[key] : item[key].value;
+        //     });
+        //     return obj;
+        // });
+
+        const { showModal, list, changeId } = data;
         
         const columns = this.columns;
 
         return (
             <div>
                 <FriendModal
-                    key={data.changeId}
-                    data={dataSource[data.changeId] || {}}
+                    key={changeId}
+                    data={list[changeId]}
                     title={'友情链接设置'}
                     visible={showModal}
                     onHandleOk={(data) => this.onHandleOk(data)}
@@ -164,7 +165,7 @@ class FriendlyLink extends React.Component {
                 <div style={{padding: '10px'}}>
                     <Button className="editable-add-btn" type="primary" onClick={this.onAdd}>添加</Button>
                 </div>
-                <Table bordered dataSource={dataSource} columns={columns} pagination={false} />
+                <Table bordered dataSource={list} columns={columns} pagination={false} />
             </div>
         )
     }

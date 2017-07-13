@@ -1,35 +1,43 @@
-export const BASEINFO = 'BASEINFO';
-export const SHOWMODAL = 'SHOWMODAL';
-export const HIDEMODAL = 'HIDEMODAL';
-
-export const ADDFRIENDLINK = 'ADDFRIENDLINK';
-export const EDITFRIENDLINK = 'EDITFRIENDLINK';
+import * as ActionTypes from '../constants/actiontypes';
 
 export function getBaseinfo(data) {
 
     return {
-        type: BASEINFO,
+        type: ActionTypes.BASEINFO,
         data
     }
 }
 var key = 100;
 
-export const addFriendLink = data => {
+export const addFriendLink = data => dispatch => {
+    dispatch(asyncAddFriendLink(data));
+    return fetch('/api/admin/')
+        .then(response => response.json())
+        .then(json => {
+            dispatch(asyncAddFriendLink(json));
+        }).catch(err => {
+            dispatch(asyncAddFriendLink(err));
+        })
+}
+
+export const asyncAddFriendLink = data => {
     key++;
     data.key = key;
     return {
-        type: ADDFRIENDLINK,
+        type: ActionTypes.ADDFRIENDLINK,
         changeId: -1,
+        showModal: false,
         data: data
     }
 }
 
-export const editFriendLink = data => {
+export const editFriendLink = (index, data) => {
     key++;
     data.key = key;
     return {
-        type: EDITFRIENDLINK,
-        changeId: -1,
+        type: ActionTypes.EDITFRIENDLINK,
+        changeId: index,
+        showModal: false,
         data: data
     }
 }
@@ -38,7 +46,7 @@ export const editFriendLink = data => {
 export function showModal(data) {
 
     return {
-        type: SHOWMODAL,
+        type: ActionTypes.SHOWMODAL,
         showModal: true,
         changeId: data === undefined ? -1 : data
     }
@@ -46,7 +54,7 @@ export function showModal(data) {
 
 export function hideModal(data) {
     return {
-        type: HIDEMODAL,
+        type: ActionTypes.HIDEMODAL,
         showModal: false,
         changeId: -1,
     }

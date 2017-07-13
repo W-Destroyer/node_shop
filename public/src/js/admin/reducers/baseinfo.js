@@ -1,4 +1,5 @@
-import { SHOWMODAL, HIDEMODAL, ADDFRIENDLINK, EDITFRIENDLINK, BASEINFO } from '../actions/baseinfo';
+// import { SHOWMODAL, HIDEMODAL, ADDFRIENDLINK, EDITFRIENDLINK, BASEINFO } from '../actions/baseinfo';
+import * as ActionTypes from '../constants/actiontypes';
 
 const initialState = {
     companyName: '江西艾麦达科技有限公司',
@@ -7,20 +8,12 @@ const initialState = {
     friendLink: {
         list: [{
             key: '0',
-            name: {
-                value: '淘宝',
-            },
-            address: {
-                value: 'https://www.taobao.com',
-            },
+            name: '淘宝',
+            address: 'https://www.taobao.com',
         }, {
             key: '1',
-            name: {
-                value: '天猫',
-            },
-            address: {
-                value: 'https://www.tmall.com',
-            },
+            name: '天猫',
+            address: 'https://www.tmall.com',
         }],
         showModal: false,
         changeId: -1,
@@ -29,23 +22,22 @@ const initialState = {
 
 
 export default function (state = initialState, action) {
-    // var newState = JSON.parse(JSON.stringify(state))
     switch(action.type) {
-        case SHOWMODAL:
+        case ActionTypes.SHOWMODAL:
             var newState = Object.assign({}, state)
             newState.friendLink.showModal = action.showModal;
             newState.friendLink.changeId = action.changeId;
             return newState;
-        case HIDEMODAL:
+        case ActionTypes.HIDEMODAL:
             var newState = Object.assign({}, state)
             newState.friendLink.showModal = action.showModal;
             return newState;
-        case ADDFRIENDLINK:
+        case ActionTypes.ADDFRIENDLINK:
             var newState = Object.assign({}, state)
             newState.friendLink.showModal = action.showModal;
             newState.friendLink.list.push(action.data);
             return newState;
-        case EDITFRIENDLINK:
+        case ActionTypes.EDITFRIENDLINK:
             var newState = Object.assign({}, state)
             newState.friendLink.showModal = action.showModal;
             newState.friendLink.list[action.changeId] = action.data;
